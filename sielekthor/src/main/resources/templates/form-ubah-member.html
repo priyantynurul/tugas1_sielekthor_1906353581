@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Form Update Member</title>
+    <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+    <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+</head>
+
+
+<body>
+<nav th:replace="fragments/fragment :: navbar"></nav>
+<br>
+<br>
+<h2 class="text-center">Form Ubah Member</h2>
+<br>
+<br>
+<div class="container">
+    <div class="card m-4 p-4" style="background-color:#adb5bd">
+        <div class="card-body">
+            <div class="justify-content-center">
+                <form th:action="@{/member/ubah/} + ${member.id}" th:object="${member}" method="POST">
+                    <input type="hidden" th:field="*{id}" />
+                    <input type="hidden" name="jenisKelamin" th:field="*{jenisKelamin}" />
+                    Nama <br>
+                    <input required class="form-control" type="text" name="namaMember" th:value="*{namaMember}"/>
+                    <br><br>
+
+                    Tanggal Lahir : <br>
+                    <input required class="form-control"  type="date" name="tanggalLahir" th:value="*{tanggalLahir}" th:field="*{tanggalLahir}"/>
+                    <br><br>
+
+                    Tanggal Pendaftaran : <br>
+                    <input required class="form-control"  type="date" name="tanggalPendaftaran" th:value="*{tanggalPendaftaran}" th:field="*{tanggalPendaftaran}"/>
+                    <br><br>
+
+                    Jenis Kelamin : <br>
+                    <select name="jenisKelamin" th:value="*{jenisKelamin}" disabled>
+                        <option value="0">Laki-Laki</option>
+                        <option value="1">Perempuan</option>
+                    </select>
+                    <br><br>
+                    <div class="justify-content-end">
+                        <a class="btn btn-light btn-outline-warning" th:href="@{/member}" style="width: 100px; border-radius: 10px;">Batal</a>
+                        <button class="btn btn-warning" type="submit" style="width: 100px; border-radius: 10px;">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>

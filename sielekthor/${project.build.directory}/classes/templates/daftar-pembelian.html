@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Daftar Pembelian</title>
+    <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+    <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+</head>
+
+
+<body>
+<nav th:replace="fragments/fragment :: navbar"></nav>
+<br>
+<br>
+<div class="container">
+    <h2 class="text-center">Daftar Pembelian</h2>
+    <br>
+    <br>
+    <a class="btn btn-warning text-dark" th:href="@{/pembelian/tambah/}"><strong>+ Tambah Pembelian</strong></a>
+    <br>
+    <br>
+    <table class="table table-striped">
+        <thead class="table-warning">
+        <tr>
+            <th>No</th>
+            <th>No Invoice</th>
+            <th>Total Harga</th>
+            <th>Member</th>
+            <th>Jumlah Barang</th>
+            <th>Tanggal Pembelian</th>
+            <th>Aksi</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="pembelian, iterationStatus : ${listPembelian}">
+            <td th:text="${iterationStatus.count}"></td>
+            <td th:text="${pembelian.no_invoice}"></td>
+            <td th:text="${pembelian.member.nama_member}"></td>
+            <td th:text="${pembelian.listPembelianBarang.quantity}"></td>
+            <td th:text="${pembelian.tanggal_pembelian}"></td>
+            <td>
+                <div class="d-flex justify-content-center">
+                    <a class="btn btn-sm btn-info" th:href="@{/pembelian/view(noPembelian=${pembelian.id})}">Detail</a>
+                    <a class="btn btn-sm btn-warning" th:href="@{/pembelian/update/} + ${pembelian.id}">Ubah</a>
+                    <a class="btn btn-sm btn-danger" th:href="@{/pembelian/delete/} + ${pembelian.id}">Hapus</a>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div th:unless="*{listPembelian.size() != 0}">
+        <h2 th:text="'Tidak ada pembelian'"></h2>
+    </div>
+    <br>
+    <br>
+    <a class="btn btn-primary" href="/">Home</a>
+</div>
+
+</body>
+
+</html>

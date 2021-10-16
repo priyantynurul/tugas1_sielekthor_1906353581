@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Daftar Member</title>
+    <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+    <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+</head>
+
+
+<body>
+<nav th:replace="fragments/fragment :: navbar"></nav>
+<br>
+<br>
+<div class="container">
+    <h2 class="text-center">Daftar Member</h2>
+    <br>
+    <br>
+    <a class="btn btn-warning text-dark" th:href="@{/member/tambah/}"><strong>+ Tambah Member</strong></a>
+    <br>
+    <br>
+    <table class="table table-striped">
+        <thead class="table-warning">
+        <tr>
+            <th>No</th>
+            <th>Nama</th>
+            <th>Tanggal Lahir</th>
+            <th>Tanggal Pendaftaran</th>
+            <th>Jenis Kelamin</th>
+            <th>Aksi</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="member, iterationStatus : ${listMember}">
+            <td th:text="${iterationStatus.count}"></td>
+            <td th:text="${member.namaMember}"></td>
+            <td th:text="${member.tanggalLahir}"></td>
+            <td th:text="${member.tanggalPendaftaran}"></td>
+            <td th:if="${member.jenisKelamin == 0}">Laki-Laki</td>
+            <td th:if="${member.jenisKelamin == 1}">Perempuan</td>
+            <td>
+                <div class="btn-toolbar justify-content-center" role="toolbar">
+                    <a class="btn btn-sm btn-info" th:href="@{/member/ubah/} + ${member.id}">Update</a>
+                </div>
+            </td>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div th:unless="*{listMember.size() != 0}">
+        <h2 th:text="'Tidak ada member'"></h2>
+    </div>
+    <br>
+    <br>
+    <a class="btn btn-primary" href="/">Home</a>
+</div>
+
+</body>
+
+</html>

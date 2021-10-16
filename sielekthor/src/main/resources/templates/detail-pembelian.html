@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detail Pembelian</title>
+    <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+    <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+</head>
+
+
+<body>
+<nav th:replace="fragments/fragment :: navbar"></nav>
+<br>
+<br>
+<div class="container">
+    <div class="card shadow-sm bg-footer rounded">
+        <div class="card-header bg-warning">
+            <h2 class="text-center">Detail Pembelian</h2>
+        </div>
+        <div class="card-body">
+            <div class="justify-content-center">
+                <p th:text="'No Invoice&ensp;&emsp;&emsp;: ' + ${pembelian.noInvoice}"></p>
+                <p th:text="'Total Harga&emsp;&emsp;&nbsp;: ' + ${pembelian.total}"></p>
+                <p th:text="'Member&emsp;&emsp;&emsp;&nbsp;: ' + ${member}"></p>
+                <p th:text="'Jumlah Barang&emsp;&emsp;&ensp;: ' + ${pembelian.quantity}"></p>
+                <p th:text="'Tanggal Pembelian&emsp;&ensp;&nbsp;&ensp;: ' + ${pembelian.tanggalPembelian}"></p> + ' hari'"></p>
+                <p th:text="'Nama Admin&emsp;&ensp;&ensp;&ensp;: ' + ${pembelian.namaAdmin}"></p>
+                <p th:if="${metode == true}" th:text="'Metode&emsp;&emsp;&emsp;&nbsp;: Cash'"></p>
+                <p th:if="${metode == false} 'Metode&emsp;&emsp;&emsp;&nbsp;: Cicilan'"></p>
+            </div>
+        </div>
+    </div>
+    <h5>Daftar Barang</h5>
+    <div class="card shadow-sm bg-footer rounded">
+        <div th:if="*{listPembelianBarang.size() !=0}">
+            <form th:action="@{/barang/delete}" th:object="${bioskop}" method="POST">
+                <input type="hidden" th:field="${bioskop.noBioskop}">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Barang</th>
+                            <th>Merk</th>
+                            <th>Tipe</th>
+                            <th>Tanggal Garansi</th>
+                            <th>Harga</th>
+                            <th>Qty</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="pembelianBarang, iterationStatus : ${listPembelianBarang}">
+                            <td th:text="${iterationStatus.count}"></td>
+                            <td th:text="${pembelianBarang.barang.namaBarang}"></td>
+                            <td th:text="${pembelianBarang.barang.merkBarang}"></td>
+                            <td th:text="${pembelianBarang.barang.tipe}"></td>
+                            <td th:text="${pembelianBarang.tanggalGaransi}"></td>
+                            <td th:text="${pembelianBarang.barang.hargaBarang}"></td>
+                            <td th:text="${pembelianBarang.quantity}"></td>
+                            <th:block th:with="variable = ${pembelianBarang.barang.hargaBarang}, controllerVar = ${pembelianBarang.quantity}, var = ${variable * controllerVar}">
+                                <p th:text="${var}"></p>
+                            </th:block>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+    <div th:unless="*{listPembelianBarang.size() != 0}">
+        <h2 th:text="'Tidak ada barang'"></h2>
+    </div>
+    <br>
+    <a class="btn btn-light btn-outline-warning" href="/pembelian">Kembali</a>
+</div>
+</body>
+</html>

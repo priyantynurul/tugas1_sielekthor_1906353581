@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detail Barang</title>
+    <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+    <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+</head>
+
+
+<body>
+<nav th:replace="fragments/fragment :: navbar"></nav>
+<br>
+<br>
+<div class="container">
+    <div class="card shadow-sm bg-footer rounded">
+        <div class="card-header bg-warning">
+            <h2 class="text-center">Detail Barang</h2>
+        </div>
+        <div class="card-body">
+            <div class="justify-content-center">
+                <p th:text="'Nama Barang&emsp;&emsp;: ' + ${barang.namaBarang}"></p>
+                <p th:text="'Kode Barang&emsp;&emsp;&nbsp;: ' + ${barang.kodeBarang}"></p>
+                <p th:text="'Merk Barang&emsp;&emsp;&nbsp;: ' + ${barang.merkBarang}"></p>
+                <p th:text="'Stok Barang&emsp;&emsp;&ensp;: ' + ${barang.stok}"></p>
+                <p th:text="'Garansi Toko&emsp;&ensp;&nbsp;&ensp;: ' + ${barang.jumlahGaransi} + ' hari'"></p>
+                <p th:text="'Tipe Barang&emsp;&ensp;&ensp;&ensp;: ' + ${tipe}"></p>
+                <p th:text="'Harga&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;: ' + ${barang.hargaBarang}"></p>
+            </div>
+        </div>
+    </div>
+    <br>
+    <a class="btn btn-light btn-outline-warning" href="/barang">Kembali</a>
+</div>
+</body>
+</html>
