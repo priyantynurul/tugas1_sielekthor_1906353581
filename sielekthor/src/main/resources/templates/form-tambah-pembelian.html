@@ -20,14 +20,13 @@
                 <div>
                     <form th:action="@{/pembelian/tambah}" th:object="${pembelian}" method="POST">
                         <input type="hidden" name="noInvoice" />
-                        <input type="hidden" type="localdate" name="tanggalPembelian"/>
 
                         Nama Admin <br>
-                        <input required class="form-control" type="text" name="namaPembelian" />
+                        <input required class="form-control" type="text" th:field="*{namaAdmin}"/>
                         <br><br>
 
                         Pembeli <br>
-                        <select th:field="*{member}" class="custom-select" name="idMember">
+                        <select th:field="*{member.id}" class="custom-select" name="idMember">
                             <tr th:each="member : ${listMember}">
                                 <option th:value="${member.id}" th:text="${member.namaMember}"></option>
                             </tr>
@@ -35,7 +34,7 @@
                         <br><br>
 
                         Metode Pembayaran <br>
-                        <select name="isCash">
+                        <select th:field="*{isCash}">
                             <option value="1">Tunai</option>
                             <option value="0">Cicil</option>
                         </select>
@@ -47,7 +46,7 @@
                                 <div class="col-sm-6">
                                     Nama Barang <br>
                                         <select name="barang"
-                                                th:field="*{listPembelianBarang[__${iterationStatus.index}__].id}"
+                                                th:field="*{listPembelianBarang[__${iterationStatus.index}__].barang.id}"
                                                 class="form-control">
                                             <div th:each="barangEx, iterationStatus2 : ${listBarang}">
                                                 <option th:value="${barangEx.id}" th:text="${barangEx.namaBarang}" >
@@ -57,7 +56,7 @@
                                 </div>
                                 <div class="col-sm">
                                         Qty <br>
-                                        <input required min="0" class="form-control" type="number" name="quantity"/>
+                                        <input required min="0" class="form-control" type="number" name="quantity" th:field="*{listPembelianBarang[__${iterationStatus.index}__].quantity}"/>
                                 </div>
                                 <div class="col-sm">
                                     <br>

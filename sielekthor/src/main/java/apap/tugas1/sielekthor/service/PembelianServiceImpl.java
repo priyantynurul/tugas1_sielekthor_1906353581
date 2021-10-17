@@ -23,6 +23,9 @@ public class PembelianServiceImpl implements PembelianService{
     @Autowired
     PembelianDB pembelianDB;
 
+    @Autowired
+    MemberService memberService;
+
     @Override
     public void addPembelian(PembelianModel pembelian) { pembelianDB.save(pembelian); }
 
@@ -56,11 +59,20 @@ public class PembelianServiceImpl implements PembelianService{
     }
 
     @Override
+    public PembelianModel getPembelianByNoInvoice(String noInvoice) {
+        Optional<PembelianModel> pembelian = pembelianDB.findByNoInvoice(noInvoice);
+        if (pembelian.isPresent()) {
+            return pembelian.get();
+        }
+        return null;
+    }
+
+    @Override
     public String generateNoInvoice(PembelianModel pembelian){
         String noInvoice = "";
-
-        String firstletter = Integer.toString(((int)(pembelian.getMember().getNamaMember().toUpperCase().charAt(0))-100)%10);
-        String endletter = Character.toString(pembelian.getMember().getNamaMember().toUpperCase().charAt(pembelian.getMember().getNamaMember().length()-1));
+        MemberModel targetMember = memberService.getMemberById(pembelian.getMember().getId());
+        String firstletter = Integer.toString((((int)(targetMember.getNamaMember().toUpperCase().charAt(0)))-64)%10);
+        String endletter = Character.toString(targetMember.getNamaMember().toUpperCase().charAt(targetMember.getNamaMember().length()-1));
         String month = Integer.toString(pembelian.getTanggalPembelian().getMonthValue());
         String date = pembelian.getTanggalPembelian().toString().substring(0,2);
         int isCash = (pembelian.getIsCash())? 1 : 2;
@@ -68,12 +80,13 @@ public class PembelianServiceImpl implements PembelianService{
         String unik = Integer.toString((Integer.parseInt(date) + Integer.parseInt(month))*5);
         if(unik.length()==2){ unik = '0' + unik;}
         Random rd = new Random();
-        String random = Character.toString((char) (rd.nextInt(26) + 'A') + (char) (rd.nextInt(26) + 'A'));
+        String random = Character.toString((char) (rd.nextInt(26) + 64)) + Character.toString((char) (rd.nextInt(26) + 64));
+        noInvoice = firstletter + endletter + month + date + isCash + payment + unik + random;
 
-        while(pembelianDB.findByNoInvoice(noInvoice) != null){
-            random = Character.toString((char) (rd.nextInt(26) + 'A') + (char) (rd.nextInt(26) + 'A'));
-            noInvoice = firstletter + endletter + month + date + isCash + payment + unik + random;
-        }
+//        while(pembelianDB.findByNoInvoice(noInvoice) != null){
+//            random = Character.toString((char) (rd.nextInt(26) + 'A') + (char) (rd.nextInt(26) + 'A'));
+//            noInvoice = firstletter + endletter + month + date + isCash + payment + unik + random;
+//        }
 
         return noInvoice;
     }

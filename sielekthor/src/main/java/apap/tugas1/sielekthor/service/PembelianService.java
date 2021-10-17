@@ -24,6 +24,8 @@ public interface PembelianService {
     //Method untuk mendapatkan total barang yang dibeli pada suatu invoice
     int getTotalQuantity(PembelianModel pembelian);
 
+    PembelianModel getPembelianByNoInvoice(String noInvoice);
+
     //Method untuk men-generate NoInvoice pembelian
     String generateNoInvoice(PembelianModel pembelian);
 }

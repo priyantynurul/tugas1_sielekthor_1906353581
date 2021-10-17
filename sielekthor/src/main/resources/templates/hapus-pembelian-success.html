@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Hapus Pembelian Success</title>
+    <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+    <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+</head>
+
+
+<body>
+<nav th:replace="fragments/fragment :: navbar"></nav>
+<div class="container">
+    <div class="card m-4 p-4">
+        <div class="card-body">
+            <div class="justify-content-center">
+                <h2 th:text="'Pembelian dengan no invoice ' + ${noInvoice} + ' berhasil dihapus. Dilakukan update barang sebagai berikut: '"></h2>
+                <p th:each="barang, iterationStatus : ${listBarang}">
+                    <p th:text="'Stok ' + ${barang.namaBarang} + ' menjadi ' + ${barang.stok}"></p>
+                </p>
+                <br>
+                <a class="btn btn-light btn-outline-warning" href="/pembelian">Kembali</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>

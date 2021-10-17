@@ -15,9 +15,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -52,11 +57,30 @@ public class PembelianController {
             Model model
     ) {
         PembelianModel pembelian = pembelianService.getPembelianById(id);
-
+        pembelian.setTanggalPembelian(LocalDateTime.now());
         model.addAttribute("pembelian", pembelian);
         model.addAttribute("metode", pembelian.getIsCash());
 
-        model.addAttribute("pembelianBarang", pembelian.getListPembelianBarang());
+        model.addAttribute("listPembelianBarang", pembelian.getListPembelianBarang());
+
+        int qty = 0;
+        for(PembelianBarangModel pb : pembelian.getListPembelianBarang()){
+            qty += pb.getQuantity();
+        }
+
+        model.addAttribute("qty", qty);
+
+        String metode = "";
+        if(pembelian.getIsCash()==true){
+            metode = "Cash";
+        } else {
+            metode = "Cicilan";
+        }
+        model.addAttribute("metode", metode);
+
+        DateTimeFormatter date = DateTimeFormatter.ofPattern("dd-LL-uuuu");
+        String tanggalPembelian = date.format(pembelian.getTanggalPembelian());
+        model.addAttribute("tanggalPembelian", tanggalPembelian);
 
         return "detail-pembelian";
     }
@@ -93,8 +117,32 @@ public class PembelianController {
 //        if(pembelianService.cekKetersediaanBarang(pembelian.getListPembelianBarang()) == false){
 //            return "tambah-pembelian-failed";
 //        }
-
+        int sumHarga = 0;
+        for(PembelianBarangModel pb:pembelian.getListPembelianBarang()){
+            BarangModel targetBarang = barangService.getBarangById(pb.getBarang().getId());
+            int harga = targetBarang.getHargaBarang() * pb.getQuantity();
+            sumHarga += harga;
+        }
+        pembelian.setTotal(sumHarga);
         pembelianService.addPembelian(pembelian);
+
+        for(PembelianBarangModel pb : pembelian.getListPembelianBarang()){
+            BarangModel targetBarang = barangService.getBarangById(pb.getBarang().getId());
+            int updateStok = targetBarang.getStok() - pb.getQuantity();
+            targetBarang.setStok(updateStok);
+        }
+
+        for(PembelianBarangModel pb : pembelian.getListPembelianBarang()){
+            pb.setPembelian(pembelian);
+            LocalDate tanggal = LocalDate.now();
+            BarangModel targetBarang = barangService.getBarangById(pb.getBarang().getId());
+            tanggal = tanggal.plusDays(targetBarang.getJumlahGaransi());
+            ZoneId defaultZoneId = ZoneId.systemDefault();
+            Date targetDate = Date.from(tanggal.atStartOfDay(defaultZoneId).toInstant());
+            pb.setTanggalGaransi(targetDate);
+            pembelianBarangService.addPembelianBarang(pb);
+        }
+        model.addAttribute("noInvoice", pembelian.getNoInvoice());
 
         //Return view template yang diinginkan
         return "tambah-pembelian-success";
@@ -130,4 +178,24 @@ public class PembelianController {
         return "form-tambah-pembelian";
     }
 
+    @GetMapping("/pembelian/hapus/{idPembelian}")
+    public String deletePembelian(@PathVariable Long idPembelian, Model model){
+        //Mendapatkan penjaga sesuai dengan noPenjaga
+        PembelianModel pembelian = pembelianService.getPembelianById(idPembelian);
+
+        List<BarangModel> listBarang = new ArrayList<BarangModel>();
+        for(PembelianBarangModel pb : pembelian.getListPembelianBarang()){
+            BarangModel targetBarang = barangService.getBarangById(pb.getBarang().getId());
+            int updateStok = targetBarang.getStok() + pb.getQuantity();
+            targetBarang.setStok(updateStok);
+            listBarang.add(targetBarang);
+        }
+        System.out.println(listBarang.size());
+        model.addAttribute("listBarang", listBarang);
+        model.addAttribute("noInvoice", pembelian.getNoInvoice());
+        pembelianService.deletePembelian(pembelian);
+
+        return "hapus-pembelian-success";
+
+    }
 }

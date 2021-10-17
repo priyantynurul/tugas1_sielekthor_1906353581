@@ -1,9 +1,8 @@
 package apap.tugas1.sielekthor.controller;
 
+import apap.tugas1.sielekthor.model.*;
 import apap.tugas1.sielekthor.model.MemberModel;
-import apap.tugas1.sielekthor.model.BarangModel;
-import apap.tugas1.sielekthor.model.MemberModel;
-import apap.tugas1.sielekthor.service.TipeService;
+import apap.tugas1.sielekthor.service.PembelianService;
 import apap.tugas1.sielekthor.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,9 +20,9 @@ public class MemberController {
     @Autowired
     private MemberService memberService;
 
-    @Qualifier("tipeServiceImpl")
+    @Qualifier("pembelianServiceImpl")
     @Autowired
-    private TipeService tipeService;
+    private PembelianService pembelianService;
 
     @GetMapping("/member")
     public String listMember(Model model) {
@@ -67,6 +66,24 @@ public class MemberController {
     @PostMapping("/member/ubah/{noMember}")
     public String updateMemberSubmit(@ModelAttribute MemberModel member, Model model){
         //Mendapatkan member sesuai dengan noMember
+
+        MemberModel memberPast = memberService.getMemberById(member.getId());
+        String namaLama = memberPast.getNamaMember();
+
+        if(member.getNamaMember()!=namaLama) {
+            String firstletter = Integer.toString((((int) (member.getNamaMember().toUpperCase().charAt(0))) - 64) % 10);
+            List<String> listNoInvoice = new ArrayList<String>();
+
+            for (PembelianModel p : memberPast.getListPembelian()) {
+                String noInvoice = p.getNoInvoice();
+                String remLetStr = noInvoice.substring(1);
+                noInvoice = firstletter + remLetStr;
+                p.setNoInvoice(noInvoice);
+                listNoInvoice.add(noInvoice);
+            }
+        }
+
+
         memberService.updateMember(member);
 
         //Add variable MemberModel ke 'member' untuk dirender dalam thymeleaf

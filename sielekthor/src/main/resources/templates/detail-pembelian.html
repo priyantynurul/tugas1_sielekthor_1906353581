@@ -19,24 +19,47 @@
         </div>
         <div class="card-body">
             <div class="justify-content-center">
-                <p th:text="'No Invoice&ensp;&emsp;&emsp;: ' + ${pembelian.noInvoice}"></p>
-                <p th:text="'Total Harga&emsp;&emsp;&nbsp;: ' + ${pembelian.total}"></p>
-                <p th:text="'Member&emsp;&emsp;&emsp;&nbsp;: ' + ${member}"></p>
-                <p th:text="'Jumlah Barang&emsp;&emsp;&ensp;: ' + ${pembelian.quantity}"></p>
-                <p th:text="'Tanggal Pembelian&emsp;&ensp;&nbsp;&ensp;: ' + ${pembelian.tanggalPembelian}"></p> + ' hari'"></p>
-                <p th:text="'Nama Admin&emsp;&ensp;&ensp;&ensp;: ' + ${pembelian.namaAdmin}"></p>
-                <p th:if="${metode == true}" th:text="'Metode&emsp;&emsp;&emsp;&nbsp;: Cash'"></p>
-                <p th:if="${metode == false} 'Metode&emsp;&emsp;&emsp;&nbsp;: Cicilan'"></p>
+                <table class="table">
+                    <tr>
+                        <td>No Invoice                      : </td>
+                        <td th:text="${pembelian.noInvoice}"></td>
+                    </tr>
+                    <tr>
+                        <td>Total Harga                     : </td>
+                        <td th:text="${pembelian.total}"></td>
+                    </tr>
+                    <tr>
+                        <td>Member                          : </td>
+                        <td th:text="${pembelian.member.namaMember}"></td>
+                    </tr>
+                    <tr>
+                        <td>Jumlah Barang                   : </td>
+                        <td th:text="${qty}"></td>
+                    </tr>
+                    <tr>
+                        <td>Tanggal Pembelian               : </td>
+                        <td th:text="${tanggalPembelian}"></td>
+                    </tr>
+                    <tr>
+                        <td>Nama Admin                      : </td>
+                        <td th:text="${pembelian.namaAdmin}"></td>
+                    </tr>
+                    <tr>
+                        <td>Metode                          : </td>
+                        <td th:text="${metode}"></td>
+                    </tr>
+                </table>
+                <a class="btn btn-sm btn-danger mr-2" th:href="@{/pembelian/hapus/} + ${pembelian.id}">Hapus</a>
             </div>
         </div>
     </div>
     <h5>Daftar Barang</h5>
     <div class="card shadow-sm bg-footer rounded">
         <div th:if="*{listPembelianBarang.size() !=0}">
-            <form th:action="@{/barang/delete}" th:object="${bioskop}" method="POST">
-                <input type="hidden" th:field="${bioskop.noBioskop}">
+            <form th:action="@{/barang/delete}" th:object="${pembelian}" method="POST">
+                <input type="hidden" th:field="${pembelian.id}">
                 <table class="table">
-                    <thead>
+                    <thead style="background-color: orange;">
                         <tr>
                             <th>No</th>
                             <th>Nama Barang</th>
@@ -53,13 +76,13 @@
                             <td th:text="${iterationStatus.count}"></td>
                             <td th:text="${pembelianBarang.barang.namaBarang}"></td>
                             <td th:text="${pembelianBarang.barang.merkBarang}"></td>
-                            <td th:text="${pembelianBarang.barang.tipe}"></td>
+                            <td th:text="${pembelianBarang.barang.tipe.namaTipe}"></td>
                             <td th:text="${pembelianBarang.tanggalGaransi}"></td>
                             <td th:text="${pembelianBarang.barang.hargaBarang}"></td>
                             <td th:text="${pembelianBarang.quantity}"></td>
-                            <th:block th:with="variable = ${pembelianBarang.barang.hargaBarang}, controllerVar = ${pembelianBarang.quantity}, var = ${variable * controllerVar}">
+                            <td><th:block th:with="variable = ${pembelianBarang.barang.hargaBarang}, controllerVar = ${pembelianBarang.quantity}, var = ${variable * controllerVar}">
                                 <p th:text="${var}"></p>
-                            </th:block>
+                            </th:block></td>
                         </tr>
                     </tbody>
                 </table>
